@@ -81,7 +81,7 @@ function drawExtra (ctx) {
 }
 
 function round (num){
-  num = Math.round(num * 1000) / 1000;
+  num = Math.round(num * 100000) / 100000;
   //if (a == ) // check for the no slope values here and return accordingly
   return num;
 }
@@ -95,9 +95,16 @@ function addText (a) {
   oldUserAngle = document.getElementById('angle').value;
   if (Math.abs(oldUserAngle-90) % 180 == 0) {
     myDiv.innerHTML += "<br><h2>Tan value: undefined</h2>";
+    tan = "undefined";
   } else {
     myDiv.innerHTML += "<h2>Tan value: " + round(tan) + "</h2>";
+    tan = round(tan);
   }
+  myDiv.innerHTML += "Type into desmos:";
+  myDiv.innerHTML += "<br>y = tan(t)";
+  myDiv.innerHTML += "<br>y = " + tan + "<br>";
+  myDiv.innerHTML += "<br>These intersection points represent all the values of 't' that correspond to a tan value of " + tan;
+  myDiv.innerHTML += "<br>See if you can find your time on there :) (X coord = time)";
 }
 
 function drawAxes () {
