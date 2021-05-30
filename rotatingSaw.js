@@ -54,6 +54,7 @@ function drawTooth(ctx, a, circleX, circleY, r, numTeeth, r2){
 
 
     a += 2 * aChange;
+    console.log("changing a");
 
   }
 
@@ -67,16 +68,29 @@ function drawAll () {
   if (a <= userAngle){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawTooth(ctx, a, canvas.width/2, canvas.height/2, canvas.height/4, 25, canvas.height/3.25);
-    a+= 2*Math.PI * 0.0005
+    a+= 2*Math.PI * 0.005
     ctx.beginPath();
     ctx.arc(canvas.width/2, canvas.height/2, canvas.height*0.02, 0, 2 * Math.PI);
     ctx.fillStyle = "black";
     ctx.fill();
     ctx.stroke();
+    console.log("through if statement");
+    // Loop the animation to the next frame.
+    window.requestAnimationFrame(drawAll);
   }
 
-  // Loop the animation to the next frame.
+}
+
+function myClick (){
+  // get the angle from the user
+  userAngle = document.getElementById('angle').value;
+  console.log(userAngle);
+  userAngle = Math.PI/180 * userAngle;
+  console.log("registered lcick");
+  console.log(userAngle);
   window.requestAnimationFrame(drawAll);
+
+
 }
 
 
@@ -88,13 +102,9 @@ canvas.style.border = "1px solid black";
 // Set up the context for the animation
 ctx = canvas.getContext("2d"); // object that let's us work with we the canvas
 
-function myClick (){
-  // get the angle from the user
-  var userAngle = document.getElementById('angle').value;
-  var a = 0;
-  drawTooth(ctx, canvas.width/2, canvas.height/2, canvas.height/4, 25, canvas.height/3.25);
+var a = 0;
+var userAngle = 0;
+drawTooth(ctx, canvas.width/2, canvas.height/2, canvas.height/4, 25, canvas.height/3.25);
 
-  // Fire up the animation engine
-  window.requestAnimationFrame(drawAll);
-
-}
+// Fire up the animation engine
+window.requestAnimationFrame(drawAll);
