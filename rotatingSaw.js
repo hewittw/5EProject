@@ -14,13 +14,14 @@ function fixY(yValue){
 function drawTooth(ctx, a, circleX, circleY, r, numTeeth, r2){
   var aChange = 2*Math.PI/(numTeeth*2)
   var c = 0.05
+  var localA = a;
 
-  var startX = circleX + r*(Math.cos(a - ((2-c) *aChange)));
-  var startY = circleY + r*(Math.sin(a - ((2-c)*aChange)));
-  var middleX = circleX + r2*(Math.cos(a));
-  var middleY = circleY + r2*(Math.sin(a));
-  var endX = circleX + r*(Math.cos(a + (c * aChange)));
-  var endY = circleY + r*(Math.sin(a + (c * aChange)));
+  var startX = circleX + r*(Math.cos(localA - ((2-c) *aChange)));
+  var startY = circleY + r*(Math.sin(localA - ((2-c)*aChange)));
+  var middleX = circleX + r2*(Math.cos(localA));
+  var middleY = circleY + r2*(Math.sin(localA));
+  var endX = circleX + r*(Math.cos(localA + (c * aChange)));
+  var endY = circleY + r*(Math.sin(localA + (c * aChange)));
 
 
   ctx.beginPath();
@@ -36,28 +37,36 @@ function drawTooth(ctx, a, circleX, circleY, r, numTeeth, r2){
 
   for (var i = 0; i < numTeeth; i++){
 
-    var startX = circleX + r*(Math.cos(a - ((2-c) *aChange)));
-    var startY = circleY + r*(Math.sin(a - ((2-c) *aChange)));
-    var middleX = circleX + r2*(Math.cos(a));
-    var middleY = circleY + r2*(Math.sin(a));
-    var endX = circleX + r*(Math.cos(a + (c * aChange)));
-    var endY = circleY + r*(Math.sin(a + (c * aChange)));
+    var startX = circleX + r*(Math.cos(localA - ((2-c) *aChange)));
+    var startY = circleY + r*(Math.sin(localA - ((2-c) *aChange)));
+    var middleX = circleX + r2*(Math.cos(localA));
+    var middleY = circleY + r2*(Math.sin(localA));
+    var endX = circleX + r*(Math.cos(localA + (c * aChange)));
+    var endY = circleY + r*(Math.sin(localA + (c * aChange)));
 
     ctx.beginPath();
-    ctx.moveTo(startX, canvas.height - startY);
-    ctx.lineTo(middleX, canvas.height - middleY);
+    ctx.moveTo(startX, fixY(startY));
+    ctx.lineTo(middleX, fixY(middleY));
     ctx.stroke();
     ctx.beginPath();
-    ctx.lineTo(middleX, canvas.height - middleY);
-    ctx.lineTo(endX, canvas.height - endY);
+    ctx.lineTo(middleX, fixY(middleY));
+    ctx.lineTo(endX, fixY(endY));
     ctx.stroke();
 
 
-    a += 2 * aChange;
+    localA += 2 * aChange;
     console.log("changing a");
 
   }
 
+}
+
+function drawExtra (ctx) {
+  ctx.beginPath();
+  ctx.arc(canvas.width/2, canvas.height/2, canvas.height*0.02, 0, 2 * Math.PI);
+  ctx.fillStyle = "black";
+  ctx.fill();
+  ctx.stroke();
 }
 
 function drawAll () {
@@ -65,20 +74,24 @@ function drawAll () {
   */
   // One of the attributes of the event object is 'which,' contains the key
   //   that was pressed to trigger the event listener.
-  if (a <= userAngle){
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    drawTooth(ctx, a, canvas.width/2, canvas.height/2, canvas.height/4, 25, canvas.height/3.25);
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  drawTooth(ctx, a, canvas.width/2, canvas.height/2, canvas.height/4, 25, canvas.height/3.25);
+  drawExtra(ctx);
+  if (a < userAngle){
     a+= 2*Math.PI * 0.005
-    ctx.beginPath();
-    ctx.arc(canvas.width/2, canvas.height/2, canvas.height*0.02, 0, 2 * Math.PI);
-    ctx.fillStyle = "black";
-    ctx.fill();
-    ctx.stroke();
-    console.log("through if statement");
-    // Loop the animation to the next frame.
-    window.requestAnimationFrame(drawAll);
+    if (a > userAngle){
+      a = userAngle;
+    }
+  } else if (a > userAngle){
+    a-= 2*Math.PI * 0.005
+    if (a < userAngle){
+      a = userAngle;
+    }
   }
 
+
+  // Loop the animation to the next frame.
+  window.requestAnimationFrame(drawAll);
 }
 
 function myClick (){
